@@ -11,17 +11,16 @@ Dùng trước khi coi landing là **hoàn tất** trên production.
 
 | Biến | Ghi chú |
 |------|---------|
-| `RESEND_API_KEY` | Resend |
-| `FROM_EMAIL` | Domain đã verify trên Resend |
-| `ADMIN_EMAIL` | Nhận thông báo lead |
+| `ADMIN_EMAIL` | Nhận thông báo lead (do Apps Script gửi) |
 | `EBOOK_URL` hoặc `DRIVE_LINK` | Ít nhất một URL đọc tài liệu (ưu tiên `EBOOK_URL`) |
+| `LEAD_WEBHOOK_URL` | URL Web App `https://script.google.com/macros/s/.../exec` |
 
 ## Khuyến nghị
 
 | Biến | Ghi chú |
 |------|---------|
 | `REPLY_TO_EMAIL` | Ví dụ `contact@agilead.vn` — user Trả lời mail tài liệu |
-| `LEAD_WEBHOOK_URL` | URL Web App `https://script.google.com/macros/s/.../exec` — ghi Google Sheet |
+| `SENDER_NAME` | Tên chữ ký trong mail phản hồi (mặc định Product Academy) |
 
 Sau khi sửa biến: **Redeploy** Vercel.
 

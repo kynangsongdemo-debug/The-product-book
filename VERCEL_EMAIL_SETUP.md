@@ -10,11 +10,10 @@
 
 | Việc | Bắt buộc? | Ghi chú |
 |------|-----------|---------|
-| Tài khoản **Resend** + domain gửi mail | Có, nếu cần form gửi email thật | Làm một lần; copy API key vào biến môi trường Vercel |
-| **Google Apps Script** + `LEAD_WEBHOOK_URL` | Không | Bỏ trống thì vẫn gửi mail; có thì lead mới ghi Sheet |
+| **Google Apps Script** + `LEAD_WEBHOOK_URL` | Có (Google-only) | Vừa lưu sheet vừa gửi mail |
 | Chạy `npm run dev` trên máy | Không | Chỉ khi bạn muốn sửa code và xem local |
 
-Tóm lại: Vercel chỉ lo **build + host**; email dùng **Resend** (biến env); Sheet dùng **một URL Web App** dán vào Vercel — không cần “cài đặt stack” trên Vercel ngoài việc nhập biến môi trường.
+Tóm lại: Vercel chỉ lo **build + host**; Apps Script sẽ xử lý **cả gửi mail lẫn lưu Google Sheet**.
 
 ---
 
@@ -22,12 +21,11 @@ Tóm lại: Vercel chỉ lo **build + host**; email dùng **Resend** (biến env
 
 Project Settings -> Environment Variables:
 
-- `RESEND_API_KEY`: API key from Resend
-- `FROM_EMAIL`: sender email (must be verified domain on Resend), e.g. `Product Academy <no-reply@your-domain.com>`
 - `ADMIN_EMAIL`: email nhận thông báo mỗi khi có lead (ví dụ `cuc@agillead.vn`)
 - `REPLY_TO_EMAIL` (khuyến nghị): khi user bấm **Trả lời** trên email tài liệu, thư tới địa chỉ này (ví dụ `contact@agilead.vn`). Nếu bỏ trống, dùng `ADMIN_EMAIL`.
+- `SENDER_NAME` (khuyến nghị): tên hiển thị chữ ký mail, ví dụ `Product Academy`
 - `EBOOK_URL` hoặc `DRIVE_LINK`: **URL đọc tài liệu** (trang ebook online trên Vercel, hoặc link Google Drive — chỉ cần **một** URL công khai). Ưu tiên `EBOOK_URL` nếu bạn đặt cả hai.
-- `LEAD_WEBHOOK_URL`: URL Google Apps Script (web app) để ghi lead vào Google Sheet — **nên bật** nếu bạn thu lead về Sheet. Nếu thiếu, form vẫn gửi email nhưng không ghi Sheet.
+- `LEAD_WEBHOOK_URL`: URL Google Apps Script (web app) để ghi lead và gửi mail. Nếu thiếu, form không hoạt động.
 
 ## 2) Deploy
 
@@ -41,7 +39,7 @@ Vercel will run static frontend + `/api/lead` serverless function automatically.
 
 - Open landing page and submit form
 - Check mailbox người dùng: nhận email chứa link tài liệu
-- Check mailbox `ADMIN_EMAIL`: nhận thông báo lead. Bấm **Trả lời** trên thư đó sẽ gửi thẳng tới email của lead (đã set `Reply-To`).
+- Check mailbox `ADMIN_EMAIL`: nhận thông báo lead
 
 ## 4) Chạy thử trên máy (local)
 
@@ -52,7 +50,7 @@ Vercel will run static frontend + `/api/lead` serverless function automatically.
 
 ### Test đầy đủ: form + email + Sheet (giống production)
 
-1. Copy `.env.example` → **`.env.local`** trong cùng thư mục project, điền đủ biến (Resend, `EBOOK_URL`/`DRIVE_LINK`, `LEAD_WEBHOOK_URL` nếu cần Sheet…).
+1. Copy `.env.example` → **`.env.local`** trong cùng thư mục project, điền đủ biến (`ADMIN_EMAIL`, `REPLY_TO_EMAIL`, `SENDER_NAME`, `EBOOK_URL`/`DRIVE_LINK`, `LEAD_WEBHOOK_URL`).
 2. Chạy: **`npm run dev:vercel`**  
    - Lần đầu có thể hỏi đăng nhập Vercel / link project — làm theo hướng dẫn trên terminal (hoặc chọn scope cá nhân).  
    - Terminal sẽ in URL (thường `http://localhost:3000`) — mở URL đó để thử đăng ký.  
@@ -67,9 +65,9 @@ Sheet đích: [Danh sách đăng ký Lead Magnet 01](https://docs.google.com/spr
 
 **Điều kiện:** Tài khoản Google bạn đăng nhập phải **có quyền chỉnh sửa** file Sheet đó (Owner hoặc được share quyền Edit).
 
-API gửi `POST` JSON tới `LEAD_WEBHOOK_URL` **trước** khi gửi email, body:
+API gửi `POST` JSON tới `LEAD_WEBHOOK_URL`; Apps Script sẽ ghi Sheet và gửi email, body:
 
-`{ "name", "email", "phone", "source", "createdAt" }` — `phone` dạng `0xxxxxxxxx`.
+`{ "name", "email", "phone", "source", "createdAt", "ebookUrl", "adminEmail", "replyToEmail", "senderName" }` — `phone` dạng `0xxxxxxxxx`.
 
 ---
 
