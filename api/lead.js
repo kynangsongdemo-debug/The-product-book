@@ -5,7 +5,10 @@ import { normalizeVnPhone, isValidVnPhone } from '../lib/validatePhone.js';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const ebookUrl = process.env.EBOOK_URL || process.env.DRIVE_LINK;
-const adminEmail = process.env.ADMIN_EMAIL || '';
+const adminEmails = (process.env.ADMIN_EMAILS || '')
+  .split(',')
+  .map(e => e.trim())
+  .filter(Boolean);
 const replyToEmail = process.env.REPLY_TO_EMAIL || 'contact@productacademy.edu.vn';
 const senderName = process.env.SENDER_NAME || 'Product Academy';
 // Email gửi đi phải là email đã verify trên Resend (ví dụ: noreply@agilead.vn)
@@ -58,10 +61,10 @@ export default async function handler(req, res) {
     }
 
     // 2. Gửi thông báo về Admin (Tùy chọn - nếu bạn muốn nhận mail báo có lead mới)
-    if (adminEmail) {
+    if (adminEmails.length > 0) {
       await resend.emails.send({
         from: `${senderName} System <${fromEmail}>`,
-        to: [adminEmail],
+        to: adminEmails, // 👈 gửi nhiều người
         subject: `[New Lead] ${name} vừa đăng ký nhận Ebook`,
         html: `
           <h3>Thông tin khách hàng mới:</h3>
@@ -74,7 +77,6 @@ export default async function handler(req, res) {
         `,
       });
     }
-
     return res.status(200).json({ ok: true, message: 'Email sent successfully', id: data.id });
 
   } catch (error) {
