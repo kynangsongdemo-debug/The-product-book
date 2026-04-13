@@ -86,3 +86,19 @@ export default async function handler(req, res) {
     });
   }
 }
+const sheetWebhook = process.env.GOOGLE_SHEET_WEBHOOK;
+
+if (sheetWebhook) {
+  await fetch(sheetWebhook, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name,
+      email: userEmail,
+      phone,
+      source: 'the-product-book-ldp',
+    }),
+  });
+}
