@@ -45,15 +45,21 @@ export default async function handler(req, res) {
       from: `${senderName} <${fromEmail}>`,
       to: [userEmail],
       reply_to: replyToEmail,
-      subject: `Tặng bạn Ebook: The Product Book`,
+      subject: `Ebook The Product Book: Cẩm nang trở thành Product Manager xuất sắc (Bản tóm tắt)`,
       html: `
         <p>Chào <strong>${name}</strong>,</p>
-        <p>Cảm ơn bạn đã quan tâm đến tài liệu của chúng tôi.</p>
-        <p>Bạn có thể tải Ebook tại đây: <a href="${ebookUrl}">${ebookUrl}</a></p>
-        <p>Chúc bạn có những trải nghiệm tuyệt vời!</p>
+        <p>Cảm ơn <strong>${name}</strong> đã quan tâm đến những tri thức do Product Academy cung cấp.</p>
+        <p>Mời bạn nhận tài liệu tại đây: <a href="${ebookUrl}">${ebookUrl}</a></p>
+        <p>Ngoài ra, để tìm hiểu thêm các khóa học về Phát triển sản phẩm (Product Management), vui lòng truy cập: <a href="https://productacademy.edu.vn/">https://productacademy.edu.vn/</a></p>
+        <p>Mong rằng tài liệu này sẽ giúp ích cho bạn!</p>
         <br/>
         <p>Trân trọng,</p>
-        <p>${senderName}</p>
+        <p>-------------------------------<br/>
+        Product Academy<br/>
+        Phát triển năng lực bài bản và toàn diện cho người làm sản phẩm chuyên nghiệp<br/>
+        ☎Hotline: 036-715-5580<br/>
+        📩Email: hanhnhm@agilead.vn<br/>
+        🌍Website: <a href="https://productacademy.edu.vn/">https://productacademy.edu.vn/</a></p>
       `,
     });
 
