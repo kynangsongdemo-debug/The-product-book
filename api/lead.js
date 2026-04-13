@@ -6,7 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const ebookUrl = process.env.EBOOK_URL || process.env.DRIVE_LINK;
 const adminEmail = process.env.ADMIN_EMAIL || '';
-const replyToEmail = process.env.REPLY_TO_EMAIL || 'contact@productacademy@edu.vn';
+const replyToEmail = process.env.REPLY_TO_EMAIL || 'contact@productacademy.edu.vn';
 const senderName = process.env.SENDER_NAME || 'Product Academy';
 // Email gửi đi phải là email đã verify trên Resend (ví dụ: noreply@agilead.vn)
 const fromEmail = process.env.SENDER_EMAIL || 'cuc@agilead.vn'; 
