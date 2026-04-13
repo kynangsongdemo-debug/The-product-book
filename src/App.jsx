@@ -156,7 +156,7 @@ export default function App() {
             </div>
             
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] text-white mb-10 leading-[1.1] tracking-tight font-medium">
-              Khởi đầu hành trình trở thành <br className="hidden md:block"/>
+              Khởi đầu hành trình <br className="hidden md:block"/>trở&nbsp;thành{" "}
               <span className="font-serif-accent italic text-[#ff71f9] font-normal">Product Manager</span>
             </h1>
           </Reveal>
