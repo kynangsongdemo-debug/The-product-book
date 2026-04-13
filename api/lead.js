@@ -1,46 +1,30 @@
+import { Resend } from 'resend';
 import { normalizeVnPhone, isValidVnPhone } from '../lib/validatePhone.js';
 
+// Khởi tạo Resend với API Key từ environment
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 const ebookUrl = process.env.EBOOK_URL || process.env.DRIVE_LINK;
-const leadWebhookUrl = process.env.LEAD_WEBHOOK_URL;
 const adminEmail = process.env.ADMIN_EMAIL || '';
-const replyToEmail = process.env.REPLY_TO_EMAIL || 'contact@agilead.vn';
+const replyToEmail = process.env.REPLY_TO_EMAIL || 'contact@productacademy@edu.vn';
 const senderName = process.env.SENDER_NAME || 'Product Academy';
-const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-/**
- * Hàm gửi dữ liệu tới Google Apps Script
- */
-async function postToGoogleAppsScript(webhookUrl, body) {
-  const url = String(webhookUrl).trim();
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8', 
-    },
-    body: JSON.stringify(body),
-    redirect: 'follow', 
-  };
-
-  const response = await fetch(url, options);
-  return response; // Trả về nguyên bản đối tượng Response để các logic bên dưới sử dụng ok, text, status
-}
+// Email gửi đi phải là email đã verify trên Resend (ví dụ: noreply@agilead.vn)
+const fromEmail = process.env.SENDER_EMAIL || 'cuc@agilead.vn'; 
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!leadWebhookUrl || !ebookUrl) {
-    return res.status(500).json({
-      error: 'Chưa cấu hình server: thiếu LEAD_WEBHOOK_URL hoặc EBOOK_URL.',
-    });
+  // Kiểm tra cấu hình Resend
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ error: 'Chưa cấu hình RESEND_API_KEY trên server.' });
   }
 
-  const name = (req.body?.name || '').trim();
-  const email = (req.body?.email || '').trim().toLowerCase();
-  const phoneRaw = (req.body?.phone || '').trim();
+  const { name, email, phone: phoneRaw } = req.body || {};
 
-  if (!name || !email || !phoneRaw) {
+  // Validate đầu vào
+  if (!name?.trim() || !email?.trim() || !phoneRaw?.trim()) {
     return res.status(400).json({ error: 'Vui lòng điền đầy đủ thông tin.' });
   }
 
@@ -49,50 +33,53 @@ export default async function handler(req, res) {
   }
 
   const phone = normalizeVnPhone(phoneRaw);
+  const userEmail = email.trim().toLowerCase();
 
   try {
-    const whRes = await postToGoogleAppsScript(leadWebhookUrl, {
-      name,
-      email,
-      phone,
-      source: 'the-product-book-ldp',
-      createdAt: new Date().toISOString(),
-      ebookUrl,
-      adminEmail,
-      replyToEmail,
-      senderName,
+    // 1. Gửi Email cho khách hàng (Chứa link Ebook)
+    const { data, error } = await resend.emails.send({
+      from: `${senderName} <${fromEmail}>`,
+      to: [userEmail],
+      reply_to: replyToEmail,
+      subject: `Tặng bạn Ebook: The Product Book`,
+      html: `
+        <p>Chào <strong>${name}</strong>,</p>
+        <p>Cảm ơn bạn đã quan tâm đến tài liệu của chúng tôi.</p>
+        <p>Bạn có thể tải Ebook tại đây: <a href="${ebookUrl}">${ebookUrl}</a></p>
+        <p>Chúc bạn có những trải nghiệm tuyệt vời!</p>
+        <br/>
+        <p>Trân trọng,</p>
+        <p>${senderName}</p>
+      `,
     });
 
-    // Lấy nội dung phản hồi dưới dạng text trước
-    const rawText = await whRes.text().catch(() => '');
+    if (error) {
+      return res.status(400).json({ error: 'Lỗi khi gửi email qua Resend', detail: error });
+    }
 
-    if (!whRes.ok) {
-      return res.status(502).json({
-        error: 'Không gửi được dữ liệu tới Google Apps Script.',
-        status: whRes.status,
-        detail: rawText.slice(0, 500),
+    // 2. Gửi thông báo về Admin (Tùy chọn - nếu bạn muốn nhận mail báo có lead mới)
+    if (adminEmail) {
+      await resend.emails.send({
+        from: `${senderName} System <${fromEmail}>`,
+        to: [adminEmail],
+        subject: `[New Lead] ${name} vừa đăng ký nhận Ebook`,
+        html: `
+          <h3>Thông tin khách hàng mới:</h3>
+          <ul>
+            <li><strong>Họ tên:</strong> ${name}</li>
+            <li><strong>Email:</strong> ${userEmail}</li>
+            <li><strong>Số điện thoại:</strong> ${phone}</li>
+            <li><strong>Nguồn:</strong> the-product-book-ldp</li>
+          </ul>
+        `,
       });
     }
 
-    let webhookData = null;
-    try {
-      webhookData = JSON.parse(rawText);
-    } catch (e) {
-      // Nếu không parse được JSON, có thể Google trả về trang Login hoặc HTML lỗi
-      return res.status(502).json({
-        error: 'Google Apps Script không trả về JSON hợp lệ.',
-        contentType: whRes.headers.get('content-type'),
-        detail: rawText.slice(0, 500),
-      });
-    }
-
-    // Kiểm tra kết quả xử lý bên trong của Script (nếu bạn có trả về {ok: true})
-    // Lưu ý: Nếu script của bạn chỉ trả về text thuần, đoạn này có thể cần điều chỉnh
-    return res.status(200).json({ ok: true, webhook: webhookData });
+    return res.status(200).json({ ok: true, message: 'Email sent successfully', id: data.id });
 
   } catch (error) {
     return res.status(500).json({
-      error: 'Failed to submit lead.',
+      error: 'Failed to process lead.',
       detail: error?.message || 'Unknown error',
     });
   }
