@@ -207,6 +207,8 @@ export default function App() {
           color: rgba(191, 219, 254, 0.78);
           font-weight: 500;
           margin-bottom: 1.1rem;
+          width: 100%;
+          text-align: center;
         }
         .book-title-the {
           font-size: 1.05rem;
@@ -228,7 +230,7 @@ export default function App() {
           white-space: nowrap;
           width: 100%;
           text-align: center;
-          margin-left: 0.08em;
+          margin-left: 0;
         }
         .book-title-book {
           font-size: 1.15rem;
@@ -249,6 +251,8 @@ export default function App() {
           text-transform: none;
           max-width: 100%;
           white-space: nowrap;
+          width: 100%;
+          text-align: center;
         }
       `}</style>
 
@@ -273,33 +277,30 @@ export default function App() {
               <span className="w-8 h-[1px] bg-[#ff71f9]"></span>
               <span className="text-[#ff71f9] text-xs font-medium tracking-[0.3em] uppercase">Hành trình làm sản phẩm</span>
             </div>
-            
-            <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] text-white mb-10 leading-[1.1] tracking-tight font-medium">
-              Khởi đầu hành trình <br className="hidden md:block"/>trở&nbsp;thành{" "}
-              <span className="font-serif-accent italic text-[#ff71f9] font-normal">Product Manager</span>
-            </h1>
           </Reveal>
           
-          <div className="grid md:grid-cols-12 gap-8 md:gap-16">
+          <div className="grid md:grid-cols-12 gap-8 md:gap-10 lg:gap-12 items-center">
             <div className="md:col-span-6">
               <Reveal delay={100}>
                 <div className="flex flex-col items-start gap-8">
                   <div className="book-container group cursor-pointer">
                     <div className="book-cover">
                       <div className="book-texture"></div>
-                      <div className="relative z-10 w-[92px] h-[267px] mx-auto flex flex-col items-center justify-center text-center">
-                        <span className="book-kicker text-center">
+                      <div className="absolute inset-0 z-10 flex items-center justify-center">
+                        <div className="max-w-[140px] px-1 flex flex-col items-center justify-center text-center">
+                          <span className="book-kicker">
                           Product Academy Edition
-                        </span>
-                        <h3 className="flex flex-col items-center justify-center mb-2 text-center w-full">
-                          <span className="book-title-the">The</span>
-                          <span className="book-title-product">Product</span>
-                          <span className="book-title-book">Book</span>
-                        </h3>
-                        <div className="w-9 h-px bg-slate-500/60 my-3"></div>
-                        <p className="book-subtitle text-center">
-                          Cẩm nang trở thành Product Manager xuất sắc
-                        </p>
+                          </span>
+                          <h3 className="flex flex-col items-center justify-center mb-2 text-center w-full">
+                            <span className="book-title-the">The</span>
+                            <span className="book-title-product">Product</span>
+                            <span className="book-title-book">Book</span>
+                          </h3>
+                          <div className="w-9 h-px bg-slate-500/60 my-3"></div>
+                          <p className="book-subtitle">
+                            Cẩm nang trở thành Product Manager xuất sắc
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -314,8 +315,12 @@ export default function App() {
                 </div>
               </Reveal>
             </div>
-            <div className="md:col-span-5 md:col-start-8">
+            <div className="md:col-span-6">
               <Reveal delay={200}>
+                <h1 className="text-4xl md:text-6xl lg:text-[4.5rem] text-white mb-8 leading-[1.12] tracking-tight font-medium">
+                  Khởi đầu hành trình <br className="hidden md:block"/>trở&nbsp;thành{" "}
+                  <span className="font-serif-accent italic text-[#ff71f9] font-normal">Product Manager</span>
+                </h1>
                 <p className="text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-16">
                   Có thể bạn vừa bước chân vào vị trí Product Manager vì công ty nhận thấy bạn có kỹ năng quản trị dự án tốt. Hoặc bạn đang làm Engineering, BA, hay là sinh viên muốn dấn thân vào nghề sản phẩm. Và khi bắt đầu tìm hiểu, rất nhanh bạn sẽ nhận ra... <span className="text-white">mình bị choáng ngợp.</span>
                 </p>
