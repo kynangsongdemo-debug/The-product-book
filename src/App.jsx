@@ -280,7 +280,7 @@ export default function App() {
           </Reveal>
           
           <div className="grid md:grid-cols-12 gap-8 md:gap-10 lg:gap-12 items-center">
-            <div className="md:col-span-6">
+            <div className="md:col-span-4">
               <Reveal delay={100}>
                 <div className="flex flex-col items-start gap-8">
                   <div className="book-container group cursor-pointer">
@@ -315,10 +315,10 @@ export default function App() {
                 </div>
               </Reveal>
             </div>
-            <div className="md:col-span-6">
+            <div className="md:col-span-8">
               <Reveal delay={200}>
                 <h1 className="text-4xl md:text-6xl lg:text-[4.5rem] text-white mb-8 leading-[1.12] tracking-tight font-medium">
-                  Khởi đầu hành trình <br className="hidden md:block"/>trở&nbsp;thành{" "}
+                  Khởi đầu hành&nbsp;trình <br className="hidden md:block"/>trở&nbsp;thành{" "}
                   <span className="font-serif-accent italic text-[#ff71f9] font-normal">Product Manager</span>
                 </h1>
                 <p className="text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-16">
