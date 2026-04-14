@@ -60,6 +60,11 @@ export default function App() {
   const [submitError, setSubmitError] = useState('');
   const [activeChapter, setActiveChapter] = useState(null);
   const brandLogo = productAcademyLogo;
+  const scrollToForm = () => {
+    const formSection = document.getElementById('download');
+    if (!formSection) return;
+    formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,6 +136,120 @@ export default function App() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
         .font-serif-accent { font-family: 'Playfair Display', serif; }
+        .book-container {
+          perspective: 1200px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0.5rem;
+        }
+        .book-cover {
+          width: 280px;
+          height: 400px;
+          background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+          border-radius: 4px 16px 16px 4px;
+          position: relative;
+          transform: rotateY(-15deg);
+          transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+          box-shadow:
+            inset 6px 0 12px rgba(255,255,255,0.05),
+            inset -2px 0 5px rgba(0,0,0,0.4),
+            25px 25px 40px -10px rgba(0,0,0,0.3),
+            10px 10px 20px rgba(0,0,0,0.2);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2rem;
+          text-align: center;
+          overflow: hidden;
+        }
+        .book-cover::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 14px;
+          background: linear-gradient(to right, #020617, #1e293b 20%, #020617 100%);
+          border-radius: 4px 0 0 4px;
+          border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .book-cover::after {
+          content: '';
+          position: absolute;
+          top: 2%;
+          bottom: 2%;
+          right: -4px;
+          width: 4px;
+          background: #f1f5f9;
+          border-radius: 0 4px 4px 0;
+          box-shadow: inset 1px 0 2px rgba(0,0,0,0.2);
+          z-index: -1;
+        }
+        .book-container:hover .book-cover {
+          transform: rotateY(-5deg) scale(1.02);
+        }
+        .book-texture {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiIvPjwvc3ZnPg==');
+          border-radius: inherit;
+          pointer-events: none;
+        }
+        .book-kicker {
+          font-size: 6px;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: rgba(191, 219, 254, 0.78);
+          font-weight: 500;
+          margin-bottom: 1.1rem;
+        }
+        .book-title-the {
+          font-size: 1.05rem;
+          font-weight: 700;
+          line-height: 1;
+          color: #f3f4f6;
+          margin-bottom: 0.2rem;
+          width: 100%;
+          text-align: center;
+        }
+        .book-title-product {
+          font-family: 'Playfair Display', serif;
+          font-size: 2.15rem;
+          font-weight: 700;
+          font-style: italic;
+          line-height: 0.95;
+          color: #ef67ee;
+          max-width: 100%;
+          white-space: nowrap;
+          width: 100%;
+          text-align: center;
+          margin-left: 0.08em;
+        }
+        .book-title-book {
+          font-size: 1.15rem;
+          font-weight: 700;
+          line-height: 1;
+          color: #f3f4f6;
+          margin-top: 0.2rem;
+          letter-spacing: -0.01em;
+          width: 100%;
+          text-align: center;
+        }
+        .book-subtitle {
+          color: rgba(219, 234, 254, 0.95);
+          font-size: 0.36rem;
+          font-weight: 500;
+          line-height: 1;
+          letter-spacing: 0;
+          text-transform: none;
+          max-width: 100%;
+          white-space: nowrap;
+        }
       `}</style>
 
       {/* Abstract Ambient Glow */}
@@ -162,6 +281,39 @@ export default function App() {
           </Reveal>
           
           <div className="grid md:grid-cols-12 gap-8 md:gap-16">
+            <div className="md:col-span-6">
+              <Reveal delay={100}>
+                <div className="flex flex-col items-start gap-8">
+                  <div className="book-container group cursor-pointer">
+                    <div className="book-cover">
+                      <div className="book-texture"></div>
+                      <div className="relative z-10 w-[92px] h-[267px] mx-auto flex flex-col items-center justify-center text-center">
+                        <span className="book-kicker text-center">
+                          Product Academy Edition
+                        </span>
+                        <h3 className="flex flex-col items-center justify-center mb-2 text-center w-full">
+                          <span className="book-title-the">The</span>
+                          <span className="book-title-product">Product</span>
+                          <span className="book-title-book">Book</span>
+                        </h3>
+                        <div className="w-9 h-px bg-slate-500/60 my-3"></div>
+                        <p className="book-subtitle text-center">
+                          Cẩm nang trở thành Product Manager xuất sắc
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={scrollToForm}
+                    className="group inline-flex items-center justify-center px-8 py-4 bg-[#ff71f9] text-[#030e2a] font-medium tracking-[0.1em] uppercase text-sm rounded-full hover:bg-white transition-colors duration-500"
+                  >
+                    Đăng ký tải tài liệu
+                    <ArrowDown strokeWidth={1.6} size={16} className="ml-3 transition-transform group-hover:translate-y-1" />
+                  </button>
+                </div>
+              </Reveal>
+            </div>
             <div className="md:col-span-5 md:col-start-8">
               <Reveal delay={200}>
                 <p className="text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-16">
