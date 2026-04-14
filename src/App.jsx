@@ -319,7 +319,13 @@ export default function App() {
               <Reveal delay={200}>
                 <h1 className="text-4xl md:text-6xl lg:text-[4.5rem] text-white mb-8 leading-[1.12] tracking-tight font-medium">
                   Khởi đầu hành&nbsp;trình <br className="hidden md:block"/>trở&nbsp;thành{" "}
-                  <span className="font-serif-accent italic text-[#ff71f9] font-normal">Product Manager</span>
+                  <span className="inline-flex items-center gap-4">
+                    <span className="font-serif-accent italic text-[#ff71f9] font-normal">Product Manager</span>
+                    <span aria-hidden="true" className="inline-flex items-center text-[#ff71f9]">
+                      <span className="block w-12 md:w-16 border-t border-current opacity-90"></span>
+                      <span className="block w-2.5 h-2.5 border-t border-r border-current rotate-45 -ml-[1px]"></span>
+                    </span>
+                  </span>
                 </h1>
                 <p className="text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-16">
                   Có thể bạn vừa bước chân vào vị trí Product Manager vì công ty nhận thấy bạn có kỹ năng quản trị dự án tốt. Hoặc bạn đang làm Engineering, BA, hay là sinh viên muốn dấn thân vào nghề sản phẩm. Và khi bắt đầu tìm hiểu, rất nhanh bạn sẽ nhận ra... <span className="text-white">mình bị choáng ngợp.</span>
